@@ -8,16 +8,15 @@
  * For the licensing terms see LICENSE.                                  *
  *                                                                       *
  *************************************************************************/
-#ifndef SIGNAL_TCONTINUOUSFILTER_H
-#define SIGNAL_TCONTINUOUSFILTER_H
+#ifndef SIGNAL_TDISCRETEFILTER_H
+#define SIGNAL_TDISCRETEFILTER_H
 
 //////////////////////////////////////////////////////////////////////////
 //                                                                      //
-// TContinuousFilter                                                    //
+// TDiscreteFilter                                                      //
 //                                                                      //
-// Base class for continous filters. Takes in a double array and        //
+// Base class for discrete filters. Takes in a double array and         //
 // and outputs a smoothed array and an array of residuals.              //
-// Can also output the smoothed value at any real value.                //
 //                                                                      //
 //////////////////////////////////////////////////////////////////////////
 
@@ -27,26 +26,31 @@
 
 namespace signal
 {
-   class TContinuousFilter
+   class TDiscreteFilter
    {
       public:
 
-         TContinuousFilter(){}
+         enum {
+            kNoOffset=-1,
+            kMiddleOffset = -2,
+            kMaxOffset=-3
+         };
+
+         TDiscreteFilter(){}
 
          virtual ~TDiscreteFilter(){}
 
-         virtual Int_t GetOutputSize(Int_n inputsize) const { return inputsize; };
+         virtual int GetOutputSize(Int_n inputsize){ return inputsize; };
 
-         virtual void Smooth(const Int_t inputsize, const Double_t input[], 
-                             Double_t output[], Double_t residual[]=nullptr) const;
+         virtual void Smooth(Int_t inputsize, const Double_t input[], 
+                             Double_t output[], Double_t residual[]=nullptr,
+                             Int_t offset=kMiddleOffset);
 
          virtual void Smooth(const std::vector<Double_t>& input, 
                              std::vector<Double_t>& output, 
-                             std::vector<Double_t>& residual) const;
+                             std::vector<Double_t>& residual,
+                             Int_t offset=kMaxOffset);
 
-         virtual Double_t Calculate(const Int_t inputsize, const Double_t input[], Double_t x) const{return 0;}
-         virtual Double_t Calculate(const Int_t inputsize, const std::vector<Double_t>& input[], Double_t x) const{return 0;}
- 
    };
 
 }

@@ -8,53 +8,48 @@
  * For the licensing terms see LICENSE.                                  *
  *                                                                       *
  *************************************************************************/
-#ifndef SIGNAL_TFIR_H
-#define SIGNAL_TFIR_H
+#ifndef SIGNAL_TDISCRETEFILTER_H
+#define SIGNAL_TDISCRETEFILTER_H
 
 //////////////////////////////////////////////////////////////////////////
 //                                                                      //
-// TFIR                                                                 //
+// DiscreteFilter                                                      //
 //                                                                      //
-// Class for finite impulse response filters. Takes in a double array   //
-// and outputs a smoothed array and an array of residuals.              //
+// Base class for discrete filters. Takes in a double array and         //
+// outputs a smoothed array and an array of residuals.                  //
 //                                                                      //
 //////////////////////////////////////////////////////////////////////////
 
-#include "TDiscreteFilter.h"
+
+#include <Rtypes.h>
+#include <vector>
 
 namespace signal
 {
-   class TFIR : public TDiscreteFilter
+   class DiscreteFilter
    {
-
-      protected:
-
-         std::vector<Double_t> fCoeffs;
-
       public:
 
-         TFIR(){}
+         enum {
+            kNoOffset=-1,
+            kMiddleOffset = -2,
+            kMaxOffset=-3
+         };
 
-         virtual ~TFIR(){}
+         DiscreteFilter(){}
 
-         virtual int GetOutputSize(Int_t inputsize)
-                     { return inputsize - fCoeffs.size() + 1; };
+         virtual ~DiscreteFilter(){}
 
-         virtual void Smooth(Int_t inputsize, const Double_t input[], 
+         virtual Int_t GetOutputSize(const Int_t inputsize) const { return inputsize; };
+
+         virtual void Smooth(const Int_t inputsize, const Double_t input[], 
                              Double_t output[], Double_t residual[]=nullptr,
-                             Int_t offset=kMiddleOffset);
+                             Int_t offset=kMiddleOffset) const;
 
          virtual void Smooth(const std::vector<Double_t>& input, 
                              std::vector<Double_t>& output, 
                              std::vector<Double_t>& residual,
-                             Int_t offset=kMiddleOffset);
-
-         TransferFunction(Double_t re, Double_t im, Double_t& zr, 
-                          Double_t& zi) const;
-         Double_t Power(Double_t re, Double_t im=0) const;
-         Double_t Magnitude(Double_t re, Double_t im=0) const;
-         Double_t PhaseDelay(Double_t re, Double_t im=0) const;
-         Double_t GroupDelay(Double_t re, Double_t im=0) const;
+                             Int_t offset=kMaxOffset) const;
 
    };
 

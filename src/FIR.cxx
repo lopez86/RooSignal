@@ -1,14 +1,14 @@
-#include "TFIR.h"
+#include "FIR.h"
 #include <algorithm>
 using std::vector;
 
 
-signal::TFIR::TFIR : TDiscreteFilter(), fCoeffs(0){}
+signal::FIR::FIR() : DiscreteFilter(), fCoeffs(0){}
 
 void
-signal::TFIR::Smooth(Int_t inputsize, const Double_t input[], 
+signal::FIR::Smooth(Int_t inputsize, const Double_t input[], 
                      Double_t output[], Double_t residual[],
-                     Int_t offset=kMiddleOffset){
+                     Int_t offset){
 
    Int_t outputsize = GetOutputSize(inputsize);
    Int_t filtersize = (Int_t) fCoeffs.size();
@@ -32,12 +32,12 @@ signal::TFIR::Smooth(Int_t inputsize, const Double_t input[],
 }
 
 void 
-signal::TFIR::Smooth(const std::vector<Double_t>& input, 
+signal::FIR::Smooth(const std::vector<Double_t>& input, 
                      std::vector<Double_t>& output, 
                      std::vector<Double_t>& residual,
-                     Int_t offset=kMiddleOffset){
+                     Int_t offset){
 
-   Int_t outputsize = GetOutputSize(inputsize);
+   Int_t outputsize = GetOutputSize((Int_t)input.size());
    if (output.size()!=outputsize)
       output.resize(outputsize);
    if (residual.size()!=outputsize)

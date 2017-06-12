@@ -16,7 +16,7 @@
 // TDiscreteFilter                                                      //
 //                                                                      //
 // Base class for discrete filters. Takes in a double array and         //
-// outputs a smoothed array and an array of residuals.                  //
+// and outputs a smoothed array and an array of residuals.              //
 //                                                                      //
 //////////////////////////////////////////////////////////////////////////
 
@@ -40,16 +40,16 @@ namespace signal
 
          virtual ~TDiscreteFilter(){}
 
-         virtual Int_t GetOutputSize(const Int_t inputsize) const { return inputsize; };
+         virtual int GetOutputSize(Int_n inputsize){ return inputsize; };
 
-         virtual void Smooth(const Int_t inputsize, const Double_t input[], 
+         virtual void Smooth(Int_t inputsize, const Double_t input[], 
                              Double_t output[], Double_t residual[]=nullptr,
-                             Int_t offset=kMiddleOffset) const;
+                             Int_t offset=kMiddleOffset);
 
          virtual void Smooth(const std::vector<Double_t>& input, 
                              std::vector<Double_t>& output, 
                              std::vector<Double_t>& residual,
-                             Int_t offset=kMaxOffset) const;
+                             Int_t offset=kMaxOffset);
 
    };
 
