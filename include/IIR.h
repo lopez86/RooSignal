@@ -39,7 +39,16 @@ namespace signal
 
          virtual ~IIR(){}
 
-         virtual int GetOutputSize(Int_n inputsize){ return inputsize; };
+         virtual Int_t GetOutputSize(Int_n inputsize) const 
+                 { return inputsize + 1 - (Int_t)fCoeffs.size(); };
+
+         virtual void SetCoeffs(Int_t size_num, const Double_t coeffs_num[],
+                                Int_t size_den,const Double_t coeffs_den[]);
+         virtual void SetCoeffs(const std::vector<Double_t>& const_num , 
+                                const std::vector<Double_t>& coeffs_den;);
+
+         virtual void SetInitialConditions(const Double_t vals[]);
+         virtual void SetInitialConditions(const std::vector<Double_t>& vals);
 
          virtual void Smooth(Int_t inputsize, const Double_t input[], 
                              Double_t output[], Double_t residual[]=nullptr,

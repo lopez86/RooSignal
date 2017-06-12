@@ -1,22 +1,32 @@
-#include "FIR.h"
+#include "IIR.h"
 #include <algorithm>
 using std::vector;
 
 
-signal::FIR::FIR() : DiscreteFilter(), fCoeffs(0){}
+signal::IIR::IIR() : DiscreteFilter(), fCoeffs(0),fCoeffsDenom(0){
 
 void
-signal::FIR::SetCoeffs(Int_t inputsize,const Double_t coeffs[]){
-  fCoeffs.assign(coeffs,coeffs+inputsize);
+signal::IIR::SetCoeffs(Int_t size_num, const Double_t coeffs_num[],
+                       Int_t size_den,const Double_t coeffs_den[]){
+   fCoeffs.assign(coeffs_num,coeffs_num+size_num);
+   fCoeffsDenom.assign(coeffs_den,coeffs_den+size_den);
 }
 
 void
-signal::FIR::SetCoeffs(const vector<Double_t>& coeffs){
-  fCoeffs = coeffs;
+signal::IIR::SetCoeffs(const vector<Double_t>& coeffs_num,
+                       const vector<Double_t>& coeffs_den){
+  fCoeffs = coeffs_num;
+  fCoeffsDenom = coeffs_den;
 }
 
 void
-signal::FIR::Smooth(Int_t inputsize, const Double_t input[], 
+signal::IIR::SetInitialConditions(const Double_t vals[])
+{
+
+}
+
+void
+signal::IIR::Smooth(Int_t inputsize, const Double_t input[], 
                      Double_t output[], Double_t residual[],
                      Int_t offset){
 
@@ -42,7 +52,7 @@ signal::FIR::Smooth(Int_t inputsize, const Double_t input[],
 }
 
 void 
-signal::FIR::Smooth(const std::vector<Double_t>& input, 
+signal::IIR::Smooth(const std::vector<Double_t>& input, 
                      std::vector<Double_t>& output, 
                      std::vector<Double_t>& residual,
                      Int_t offset){
@@ -58,7 +68,7 @@ signal::FIR::Smooth(const std::vector<Double_t>& input,
 }
 
 void
-signal::FIR::TransferFunction(Double_t re, Double_t im, 
+signal::IIR::TransferFunction(Double_t re, Double_t im, 
                               Double_t& zr, Double_t& zi,
                               Int_t offset) const{
 
@@ -79,19 +89,19 @@ signal::FIR::TransferFunction(Double_t re, Double_t im,
 }
 
 Double_t
-signal::FIR::Power(Double_t re, Double_t im, Int_t offset) const{
+signal::IIR::Power(Double_t re, Double_t im, Int_t offset) const{
    Double_t zr,zi;
    TransferFunction(re,im,zr,zi,offset);
    return zr*zr + zi*zi;
 }
 
 Double_t
-signal::FIR::Magnitude(Double_t re, Double_t im, Int_t offset) const{
+signal::IIR::Magnitude(Double_t re, Double_t im, Int_t offset) const{
    return sqrt(Power(re,im,offset));
 }
 
 Double_t
-signal::FIR::PhaseShift(Double_t re, Double_t im, Int_t offset) const{
+signal::IIR::PhaseShift(Double_t re, Double_t im, Int_t offset) const{
    Double_t zr,zi;
    TransferFunction(re,im,zr,zi,offset);
    return atan2(zi,zr);

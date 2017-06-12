@@ -37,8 +37,11 @@ namespace signal
 
          virtual ~FIR(){}
 
-         virtual int GetOutputSize(Int_t inputsize)
+         virtual Int_t GetOutputSize(Int_t inputsize) const
                      { return inputsize - fCoeffs.size() + 1; };
+
+         virtual void SetCoeffs(Int_t inputsize,const Double_t coeffs[]);
+         virtual void SetCoeffs(const std::vector<Double_t>& coeffs);
 
          virtual void Smooth(Int_t inputsize, const Double_t input[], 
                              Double_t output[], Double_t residual[]=nullptr,
@@ -50,10 +53,13 @@ namespace signal
                              Int_t offset=kMiddleOffset);
 
          void TransferFunction(Double_t re, Double_t im, Double_t& zr, 
-                          Double_t& zi) const;
-         Double_t Power(Double_t re, Double_t im=0) const;
-         Double_t Magnitude(Double_t re, Double_t im=0) const;
-         Double_t PhaseShift(Double_t re, Double_t im=0) const;
+                          Double_t& zi,Int_t offset=kMiddleOffset) const;
+         Double_t Power(Double_t re, Double_t im=0,
+                        Int_t offset=kMiddleOffset) const;
+         Double_t Magnitude(Double_t re, Double_t im=0,
+                            Int_t offset=kMiddleOffset) const;
+         Double_t PhaseShift(Double_t re, Double_t im=0,
+                             Int_t offset=kMiddleOffset) const;
 
    };
 
