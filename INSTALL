@@ -1,0 +1,14 @@
+This package can be built with cmake. Currently, it is set up to
+work on Linux (built on Ubuntu 14.04 with g++ 4.8.4). Support
+for other systems is not provided at the moment but should
+be simple.
+
+On Linux, to build:
+
+> mkdir BUILD_DIR
+> cd $BUILD_DIR
+> cmake $ROOSIGNALDIR/.
+> cmake --build .
+
+Install scripts are not yet included, as the package is 
+in a very incomplete state.

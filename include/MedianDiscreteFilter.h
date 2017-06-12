@@ -8,39 +8,38 @@
  * For the licensing terms see LICENSE.                                  *
  *                                                                       *
  *************************************************************************/
-#ifndef SIGNAL_TDISCRETEFILTER_H
-#define SIGNAL_TDISCRETEFILTER_H
+#ifndef SIGNAL_MEDIANDISCFILTER_H
+#define SIGNAL_MEDIANDISCFILTER_H
 
 //////////////////////////////////////////////////////////////////////////
 //                                                                      //
-// TDiscreteFilter                                                      //
+// MedianDiscreteFilter                                                     //
 //                                                                      //
-// Base class for discrete filters. Takes in a double array and         //
+// Discrete median filter. Takes in a double array and                  //
 // and outputs a smoothed array and an array of residuals.              //
 //                                                                      //
 //////////////////////////////////////////////////////////////////////////
 
-
 #include <Rtypes.h>
+#include "DiscreteFilter.h"
 #include <vector>
 
 namespace signal
 {
-   class TDiscreteFilter
+   class MedianDiscreteFilter : public DiscreteFilter
    {
+
+      protected:
+         Int_t fFilterSize;
+
       public:
 
-         enum {
-            kNoOffset=-1,
-            kMiddleOffset = -2,
-            kMaxOffset=-3
-         };
+         MedianDiscreteFilter(Int_t halfwidth=2) : fFilterSize(halfwidth*2+1) {}
 
-         TDiscreteFilter(){}
+         virtual ~MedianDiscreteFilter(){}
 
-         virtual ~TDiscreteFilter(){}
-
-         virtual int GetOutputSize(Int_n inputsize){ return inputsize; };
+         virtual int GetOutputSize(Int_t inputsize)
+                     { return inputsize - fFilterSize + 1; };
 
          virtual void Smooth(Int_t inputsize, const Double_t input[], 
                              Double_t output[], Double_t residual[]=nullptr,
