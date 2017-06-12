@@ -53,8 +53,7 @@ namespace signal
                           Double_t& zi) const;
          Double_t Power(Double_t re, Double_t im=0) const;
          Double_t Magnitude(Double_t re, Double_t im=0) const;
-         Double_t PhaseDelay(Double_t re, Double_t im=0) const;
-         Double_t GroupDelay(Double_t re, Double_t im=0) const;
+         Double_t PhaseShift(Double_t re, Double_t im=0) const;
 
    };
 

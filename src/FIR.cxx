@@ -47,3 +47,41 @@ signal::FIR::Smooth(const std::vector<Double_t>& input,
 
 }
 
+void
+signal::FIR::TransferFunction(Double_t re, Double_t im, 
+                              Double_t& zr, Double_t& zi, Int_t offset=kMiddleOffset) const{
+
+   if (offset == kNoOffset) offset = 0;
+   else if (offset == kMiddleOffset) offset = filtersize / 2;
+   else if (offset == kMaxOffset) offset = filtersize - 1;
+
+   zr = 0;
+   zi = 0;
+   for (Int_t idx = 0; idx < (Int_t)fCoeffs.size(); idx++){
+      A = exp(-re * (idx-offset));
+      zr += A * cos(im * (idx-offset)) * fCoeffs[idx];
+      im -= A * sin(im *(idx-offset)) * fCoeffs[idx];
+
+   }
+
+}
+
+Double_t
+signal::FIR::Power(Double_t re, Double_t im, Int_t offset) const{
+   Double_t zr,zi;
+   TransferFunction(re,im,zr,zi,offset);
+   return zr*zr + zi*zi;
+}
+
+Double_t
+signal::FIR::Magnitude(Double_t re, Double_t im, Int_t offset) const{
+   return sqrt(Power(re,im,offset));
+}
+
+Double_t
+signal::FIR::PhaseShift(Double_t re, Double_t im, Int_t offset) const{
+   Double_t zr,zi;
+   TransferFunction(re,im,zr,zi,offset);
+   return atan2(zi,zr);
+}
+

@@ -8,8 +8,8 @@
  * For the licensing terms see LICENSE.                                  *
  *                                                                       *
  *************************************************************************/
-#ifndef SIGNAL_TDISCRETEFILTER_H
-#define SIGNAL_TDISCRETEFILTER_H
+#ifndef SIGNAL_IIR_H
+#define SIGNAL_IIR_H
 
 //////////////////////////////////////////////////////////////////////////
 //                                                                      //
@@ -26,19 +26,18 @@
 
 namespace signal
 {
-   class TDiscreteFilter
+   class IIR
    {
+
+      protected:
+         std::vector<Double_t> fCoeffs;
+         std::vector<Double_t> fCoeffsDenom;
+
       public:
 
-         enum {
-            kNoOffset=-1,
-            kMiddleOffset = -2,
-            kMaxOffset=-3
-         };
+         IIR(){}
 
-         TDiscreteFilter(){}
-
-         virtual ~TDiscreteFilter(){}
+         virtual ~IIR(){}
 
          virtual int GetOutputSize(Int_n inputsize){ return inputsize; };
 
