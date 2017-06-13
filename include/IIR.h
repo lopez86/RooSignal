@@ -13,10 +13,11 @@
 
 //////////////////////////////////////////////////////////////////////////
 //                                                                      //
-// TDiscreteFilter                                                      //
+// IIR                                                                  //
 //                                                                      //
-// Base class for discrete filters. Takes in a double array and         //
-// and outputs a smoothed array and an array of residuals.              //
+// Base class for IIR (infinite impulse response) filters.              //
+// Takes in a double array and outputs a smoothed array and an array    //
+// of residuals.                                                        //
 //                                                                      //
 //////////////////////////////////////////////////////////////////////////
 
@@ -32,6 +33,7 @@ namespace signal
       protected:
          std::vector<Double_t> fCoeffs;
          std::vector<Double_t> fCoeffsDenom;
+         std::vector<Double_t> fInitCond;
 
       public:
 
@@ -41,6 +43,15 @@ namespace signal
 
          virtual Int_t GetOutputSize(Int_n inputsize) const 
                  { return inputsize + 1 - (Int_t)fCoeffs.size(); };
+
+         const std::vector<Double_t>& GetNumeratorCoeffs() const
+                 {return fCoeffs;}
+
+         const std::vector<Double_t>& GetDenominatorCoeffs() const
+                 {return fCoeffsDenom;}
+
+         const std::vector<Double_t>& GetInitialConditions() const
+                 {return fInitCond;}
 
          virtual void SetCoeffs(Int_t size_num, const Double_t coeffs_num[],
                                 Int_t size_den,const Double_t coeffs_den[]);

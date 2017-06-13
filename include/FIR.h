@@ -40,6 +40,9 @@ namespace signal
          virtual Int_t GetOutputSize(Int_t inputsize) const
                      { return inputsize - fCoeffs.size() + 1; };
 
+         const std::vector<Double_t>& GetCoeffs() const
+                     { return fCoeffs;}
+
          virtual void SetCoeffs(Int_t inputsize,const Double_t coeffs[]);
          virtual void SetCoeffs(const std::vector<Double_t>& coeffs);
 

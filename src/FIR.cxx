@@ -30,7 +30,7 @@ signal::FIR::Smooth(Int_t inputsize, const Double_t input[],
    for (Int_t i = 0; i < outputsize; i++){
       output[i] = 0;
       for (Int_t j = 0; j < filtersize; j++){
-         output[i] = input[i+j] * fCoeffs[j];
+         output[i] += input[i+j] * fCoeffs[j];
       }//Loop over filter elements
 
       if (residual!=nullptr) 
