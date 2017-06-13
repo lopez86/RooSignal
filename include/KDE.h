@@ -8,14 +8,15 @@
  * For the licensing terms see LICENSE.                                  *
  *                                                                       *
  *************************************************************************/
-#ifndef SIGNAL_TCONTINUOUSFILTER_H
-#define SIGNAL_TCONTINUOUSFILTER_H
+#ifndef SIGNAL_KDE_H
+#define SIGNAL_KDE_H
 
 //////////////////////////////////////////////////////////////////////////
 //                                                                      //
-// ContinuousFilter                                                     //
+// KDE                                                                  //
 //                                                                      //
-// Base class for continuous filters. Takes in a double array and       //
+// Base class for KDE (kernel density estimate) filters.                //
+// Takes in a double array and                                          //
 // and outputs a smoothed array and an array of residuals.              //
 // Here I define a continuous filter as one where the                   //
 // Can also output the smoothed value at any real value.                //
@@ -28,15 +29,28 @@
 
 namespace signal
 {
-   class ContinuousFilter : public Filter
+   class KDE : public ContinuousFilter
    {
+
+      protected:
+
+         std::vector<Double_t> fPars;
+         Double_t (*fKernel)(Double_t,Double_t,Double_t[]);
+
       public:
 
-         ContinuousFilter(){}
+         KDE(){}
 
-         virtual ~ContinuousFilter(){}
+         virtual ~KDE(){}
 
-         virtual Int_t GetOutputSize(Int_t inputsize) const { return inputsize; };
+         void SetKernel( Double_t(*k)(Double_t,Double_t,Double_t[]))
+                        {fKernel = k;}
+
+         void SetParameters(Int_t npar, Double_t pars[]);
+         void SetParameters(const std::vector<Double_t>& pars);
+
+         Double_t Kernel(Double_t x1, Double_t x2) const;
+        
 
          virtual void Smooth(Int_t inputsize,const Double_t inputx[],
                              const Double_t inputy[],Double_t output[], 
@@ -48,14 +62,15 @@ namespace signal
                              std::vector<Double_t>& residual, 
                              Bool_t set_residual=false) const;
 
-         virtual Double_t Calculate(const Int_t inputsize, 
+         virtual Double_t Calculate(Int_t inputsize, 
                                     const Double_t inputx[], 
                                     const Double_t inputy[], 
-                                    Double_t x) const{return 0;}
+                                    Double_t x) const;
 
          virtual Double_t Calculate(const std::vector<Double_t>& inputx, 
                                     const std::vector<Double_t>& inputy,
-                                    Double_t x) const{return 0;}
+                                    Double_t x) const;
+ 
    };
 
 }

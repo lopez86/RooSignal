@@ -8,48 +8,49 @@
  * For the licensing terms see LICENSE.                                  *
  *                                                                       *
  *************************************************************************/
-#ifndef SIGNAL_TDISCRETEFILTER_H
-#define SIGNAL_TDISCRETEFILTER_H
+#ifndef SIGNAL_MEDIANFILTER_H
+#define SIGNAL_MEDIANFILTER_H
 
 //////////////////////////////////////////////////////////////////////////
 //                                                                      //
-// DiscreteFilter                                                      //
+// MedianFilter                                                     //
 //                                                                      //
-// Base class for discrete filters. Takes in a double array and         //
-// outputs a smoothed array and an array of residuals.                  //
+// Discrete median filter. Takes in a double array and                  //
+// and outputs a smoothed array and an array of residuals.              //
 //                                                                      //
 //////////////////////////////////////////////////////////////////////////
-
 
 #include <Rtypes.h>
+#include "Filter.h"
 #include <vector>
 
 namespace signal
 {
-   class DiscreteFilter
+   class MedianFilter : public Filter
    {
+
+      protected:
+         Int_t fFilterSize;
+         Int_t fOffset;
+
       public:
 
-         enum {
-            kNoOffset=-1,
-            kMiddleOffset = -2,
-            kMaxOffset=-3
-         };
+         MedianDiscreteFilter(Int_t halfwidth=2) : fFilterSize(halfwidth*2+1) {}
 
-         DiscreteFilter(){}
+         virtual ~MedianFilter(){}
 
-         virtual ~DiscreteFilter(){}
+         virtual int GetOutputSize(Int_t inputsize)
+                     { return inputsize - fFilterSize + 1; };
 
-         virtual Int_t GetOutputSize(const Int_t inputsize) const { return inputsize; };
+         virtual void Smooth(Int_t inputsize, const Double_t inputx[], 
+                             const Double_t inputy[],Double_t output[], 
+                             Double_t residual[]=nullptr);
 
-         virtual void Smooth(const Int_t inputsize, const Double_t input[], 
-                             Double_t output[], Double_t residual[]=nullptr,
-                             Int_t offset=kMiddleOffset) const;
-
-         virtual void Smooth(const std::vector<Double_t>& input, 
+         virtual void Smooth(const std::vector<Double_t>& inputx, 
+                             const std::vector<Double_t>& inputy, 
                              std::vector<Double_t>& output, 
                              std::vector<Double_t>& residual,
-                             Int_t offset=kMaxOffset) const;
+                             Bool_t set_residual);
 
    };
 

@@ -3,7 +3,8 @@
 using std::vector;
 
 
-signal::IIR::IIR() : DiscreteFilter(), fCoeffs(0),fCoeffsDenom(0){
+signal::IIR::IIR() : DiscreteFilter(), fOffset(0),fCoeffs(0),
+                     fCoeffsDenom(0), fInitCond(0){}
 
 void
 signal::IIR::SetCoeffs(Int_t size_num, const Double_t coeffs_num[],
@@ -30,22 +31,22 @@ signal::IIR::SetInitialConditions(const vector<Double_t>& vals){
 }
 
 void
-signal::IIR::Smooth(Int_t inputsize, const Double_t input[], 
-                     Double_t output[], Double_t residual[],
-                     Int_t offset){
+signal::IIR::Smooth(Int_t inputsize, const Double_t inputx[], 
+                    const Double_t inputy[], Double_t output[], 
+                    Double_t residual[]){
 
    Int_t outputsize = GetOutputSize(inputsize);
    Int_t firsize = (Int_t) fCoeffs.size();
    Int_t iirsize = (Int_t) fCoeffsDenom.size();
-
-   if (offset == kNoOffset) offset = 0;
-   else if (offset == kMiddleOffset) offset = firsize / 2;
-   else if (offset == kMaxOffset) offset = firsize - 1;
+   Int_t offset = fOffset;
+   if (fOffset == kNoOffset) offset = 0;
+   else if (fOffset == kMiddleOffset) offset = firsize / 2;
+   else if (fOffset == kMaxOffset) offset = firsize - 1;
 
    for (Int_t i = 0; i < outputsize; i++){
       output[i] = 0;
       for (Int_t j = 0; j < firsize; j++){
-         output[i] += input[i+j] * fCoeffs[j];
+         output[i] += inputy[i+j] * fCoeffs[j];
       } // FIR part loop
       for (Int_t j = 0; j < iirsize; j++){
          Double_t value = 0;
@@ -56,7 +57,7 @@ signal::IIR::Smooth(Int_t inputsize, const Double_t input[],
       }//IIR part loop
 
       if (residual!=nullptr) 
-         residual[i] = input[i+offset] - output[i];
+         residual[i] = inputy[i+offset] - output[i];
 
    }//Loop over output elements
 
@@ -64,19 +65,25 @@ signal::IIR::Smooth(Int_t inputsize, const Double_t input[],
 }
 
 void 
-signal::IIR::Smooth(const std::vector<Double_t>& input, 
-                     std::vector<Double_t>& output, 
-                     std::vector<Double_t>& residual,
-                     Int_t offset){
+signal::IIR::Smooth(const std::vector<Double_t>& inputx, 
+                    const std::vector<Double_t>& inputy,
+                    std::vector<Double_t>& output, 
+                    std::vector<Double_t>& residual,
+                    Bool_t set_residual){
 
-   Int_t outputsize = GetOutputSize((Int_t)input.size());
+   Int_t outputsize = GetOutputSize((Int_t)inputy.size());
    if (output.size()!=outputsize)
       output.resize(outputsize);
-   if (residual.size()!=outputsize)
-      residual.resize(outputsize);
 
-   Smooth( (Int_t)input.size(),&input[0],&output[0],&residual[0],offset);
+   if (set_residual){
+      if (residual.size()!=outputsize)
+         residual.resize(outputsize);
 
+      Smooth( (Int_t)input.size(),&inputx[0],&inputy[0],&output[0],&residual[0]);
+   }else{
+      Smooth( (Int_t)input.size(),&inputx[0],&inputy[0],&output[0],nullptr);
+
+   }
 }
 
 void
@@ -85,9 +92,10 @@ signal::IIR::TransferFunction(Double_t re, Double_t im,
                               Int_t offset) const{
 
    Int_t filtersize = (Int_t) fCoeffs.size();
-   if (offset == kNoOffset) offset = 0;
-   else if (offset == kMiddleOffset) offset = filtersize / 2;
-   else if (offset == kMaxOffset) offset = filtersize - 1;
+   Int_t offset = fOffset;
+   if (fOffset == kNoOffset) offset = 0;
+   else if (fOffset == kMiddleOffset) offset = filtersize / 2;
+   else if (fOffset == kMaxOffset) offset = filtersize - 1;
 
    Double_t zrn = 0;//Real numerator
    Double_t zin = 0;//Imag numerator

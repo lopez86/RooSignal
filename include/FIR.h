@@ -20,15 +20,16 @@
 //                                                                      //
 //////////////////////////////////////////////////////////////////////////
 
-#include "DiscreteFilter.h"
+#include "Filter.h"
 
 namespace signal
 {
-   class FIR : public DiscreteFilter
+   class FIR : public Filter
    {
 
       protected:
 
+         Int_t fOffset;
          std::vector<Double_t> fCoeffs;
 
       public:
@@ -36,6 +37,8 @@ namespace signal
          FIR();
 
          virtual ~FIR(){}
+
+         void SetOffset(Int_t off){fOffset = off;}
 
          virtual Int_t GetOutputSize(Int_t inputsize) const
                      { return inputsize - fCoeffs.size() + 1; };
@@ -46,14 +49,15 @@ namespace signal
          virtual void SetCoeffs(Int_t inputsize,const Double_t coeffs[]);
          virtual void SetCoeffs(const std::vector<Double_t>& coeffs);
 
-         virtual void Smooth(Int_t inputsize, const Double_t input[], 
-                             Double_t output[], Double_t residual[]=nullptr,
-                             Int_t offset=kMiddleOffset);
+         virtual void Smooth(Int_t inputsize,const Double_t inputx[],
+                             const Double_t inputy[],Double_t output[], 
+                             Double_t residual[]=nullptr) const;
 
-         virtual void Smooth(const std::vector<Double_t>& input, 
+         virtual void Smooth(const std::vector<Double_t>& inputx, 
+                             const std::vector<Double_t>& inputy, 
                              std::vector<Double_t>& output, 
-                             std::vector<Double_t>& residual,
-                             Int_t offset=kMiddleOffset);
+                             std::vector<Double_t>& residual, 
+                             Bool_t set_residual=false) const;
 
          void TransferFunction(Double_t re, Double_t im, Double_t& zr, 
                           Double_t& zi,Int_t offset=kMiddleOffset) const;

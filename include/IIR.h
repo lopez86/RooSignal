@@ -27,19 +27,22 @@
 
 namespace signal
 {
-   class IIR
+   class IIR : public Filter
    {
 
       protected:
+         Int_t fOffset;
          std::vector<Double_t> fCoeffs;
          std::vector<Double_t> fCoeffsDenom;
          std::vector<Double_t> fInitCond;
 
       public:
 
-         IIR(){}
+         IIR();
 
          virtual ~IIR(){}
+
+         void SetOffset(Int_t off){fOffset = off;}
 
          virtual Int_t GetOutputSize(Int_n inputsize) const 
                  { return inputsize + 1 - (Int_t)fCoeffs.size(); };
@@ -61,15 +64,15 @@ namespace signal
          virtual void SetInitialConditions(const Double_t vals[]);
          virtual void SetInitialConditions(const std::vector<Double_t>& vals);
 
-         virtual void Smooth(Int_t inputsize, const Double_t input[], 
-                             Double_t output[], Double_t residual[]=nullptr,
-                             Int_t offset=kMiddleOffset);
+         virtual void Smooth(Int_t inputsize,const Double_t inputx[],
+                             const Double_t inputy[],Double_t output[], 
+                             Double_t residual[]=nullptr) const;
 
-         virtual void Smooth(const std::vector<Double_t>& input, 
+         virtual void Smooth(const std::vector<Double_t>& inputx, 
+                             const std::vector<Double_t>& inputy, 
                              std::vector<Double_t>& output, 
-                             std::vector<Double_t>& residual,
-                             Int_t offset=kMaxOffset);
-
+                             std::vector<Double_t>& residual, 
+                             Bool_t set_residual=false) const;
    };
 
 }
